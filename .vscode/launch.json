@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ARM Linux Remote Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            // 1. 本地可执行文件的完整路径 (WSL 里的路径)
+            "program": "${workspaceFolder}/01_test/crash_demo_app",
+            "args": [],
+            "stopAtEntry": true,  // 连接后自动暂停在 main 函数
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            
+            // 2. 调试器路径 (WSL 里安装的 gdb-multiarch)
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            
+            // 3. 板子的 IP 和端口
+            "miDebuggerServerAddress": "192.168.1.103:1234",
+            
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "enable pretty printing",
+                    "ignoreFailures": true
+                },
+                {
+                    // 4. 告诉 GDB 这是 ARM 架构
+                    "text": "set architecture arm", 
+                    "description": "Set architecture to ARM",
+                    "ignoreFailures": false
+                }
+            ]
+        }
+    ]
+}
