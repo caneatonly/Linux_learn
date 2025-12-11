@@ -5,6 +5,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include <sys/types.h>
 
 // 与原例一致：根据你的板子实际路径调整
 #define LED_BRIGHTNESS_PATH "/sys/class/leds/user-led/brightness"

@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "WSL-ARM-Linaro",
+            "compilerPath": "/home/zyshine3_laptop/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-arm",
+            "defines": [
+                "_GNU_SOURCE",
+                "_XOPEN_SOURCE=700"
+            ],
+            "includePath": [
+                "${workspaceFolder}/**",
+
+                // glibc 用户头文件
+                "/home/zyshine3_laptop/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/arm-linux-gnueabihf/include",
+
+                // toolchain 通用 include
+                "/home/zyshine3_laptop/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/include",
+
+                // GCC 内部头文件（如 stdint.h）
+                "/home/zyshine3_laptop/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/7.5.0/include",
+
+                // GCC 内部固定头文件
+                "/home/zyshine3_laptop/toolchain/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/7.5.0/include-fixed"
+            ]
+        }
+    ],
+    "version": 4
+}
