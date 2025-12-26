@@ -10,6 +10,7 @@
 
 // 端口定义
 #define SERVER_PORT 8888
+#define MAX_BODY_SIZE (10 * 1024 * 1024)  // 最大 10MB
 
 // 1. 定义协议头 (必须 1 字节对齐)
 #pragma pack(1)
@@ -110,6 +111,12 @@ int main(void) {
 
         // Step C: 读取数据体
         if (header.body_len > 0) {
+            // 验证body_len是否合理
+            if (header.body_len > MAX_BODY_SIZE) {
+                printf("Error: body_len 过大 (%u 字节)\n", header.body_len);
+                break;
+            }
+            
             body = (char *)malloc(header.body_len + 1);
             if (body == NULL) break;
 
