@@ -38,10 +38,24 @@ ssize_t readn(int fd, void *vptr, size_t n) {
     nleft = n;          // 初始化还需要读 n 个
 
     while (nleft > 0) {
-        // TODO: 请在这里填写代码
-        // 1. 调用 recv，注意处理 EINTR 信号中断的情况
-        // 2. 处理 recv 返回 0 (对方关闭连接) 的情况
-        // 3. 更新 nleft 和 ptr 指针
+        // 调用 recv 读取数据
+        nread = recv(fd, ptr, nleft, 0);
+        
+        if (nread < 0) {
+            // 如果是信号中断，继续读取
+            if (errno == EINTR) {
+                nread = 0;  // 本次没读到，重新来
+            } else {
+                return -1;  // 真正的错误
+            }
+        } else if (nread == 0) {
+            // 对方关闭了连接
+            break;
+        }
+        
+        // 更新剩余字节数和指针位置
+        nleft -= nread;
+        ptr += nread;
     }
     return (n - nleft); // 返回实际读取的总字节数
 }
@@ -78,12 +92,19 @@ int main(void) {
 
     while (1) {
         // Step A: 读取头部
-        // TODO: 调用 readn 读取 sizeof(header) 个字节
-        // 如果返回值 == 0，打印 "Client closed" 并 break
-        // 如果返回值 < sizeof(header)，打印 Error 并 break
+        ssize_t ret = readn(connfd, &header, sizeof(header));
+        if (ret == 0) {
+            printf("Client closed\n");
+            break;
+        }
+        if (ret < sizeof(header)) {
+            printf("Error: 读取头部失败\n");
+            break;
+        }
         
         // Step B: 字节序转换 (网络序 -> 主机序)
-        // TODO: 使用 ntohl 处理 header.pkt_type 和 header.body_len
+        header.pkt_type = ntohl(header.pkt_type);
+        header.body_len = ntohl(header.body_len);
 
         printf("DEBUG: 收到包头 [Type=%d, Len=%d]\n", header.pkt_type, header.body_len);
 
@@ -92,8 +113,12 @@ int main(void) {
             body = (char *)malloc(header.body_len + 1);
             if (body == NULL) break;
 
-            // TODO: 调用 readn 读取 header.body_len 个字节到 body 中
-            // 同样需要处理读取失败的情况
+            ret = readn(connfd, body, header.body_len);
+            if (ret < header.body_len) {
+                printf("Error: 读取数据体失败\n");
+                free(body);
+                break;
+            }
 
             body[header.body_len] = '\0'; // 补上结束符方便打印
             printf("RECV: %s\n\n", body);
