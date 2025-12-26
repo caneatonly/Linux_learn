@@ -1,1 +1,7 @@
 *.armhf
+# Compiled binaries
+tcp_exercise
+native_server
+*.o
+*.out
+a.out
